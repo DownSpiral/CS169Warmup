@@ -10,7 +10,7 @@ class TestapiController < ApplicationController
   end
 
   def unitTests
-    f = IO.popen("rake spec SPEC=spec\\models\\user_spec.rb")
+    f = IO.popen("rspec")
     s = f.read
 
     totalTests = -1
