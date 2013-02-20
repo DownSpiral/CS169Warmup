@@ -54,6 +54,8 @@ WarmUp::Application.routes.draw do
   match "/TESTAPI/resetFixture", :to => "testapi#resetFixture", :via => "post"
   match "/TESTAPI/unitTests", :to => "testapi#unitTests", :via => "post"
 
+  root :to => 'home#index'
+
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

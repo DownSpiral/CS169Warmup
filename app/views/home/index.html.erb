@@ -1,0 +1,116 @@
+<html>
+<center>
+  <div id="message"></div>
+
+  <div id="login">
+    <center>
+      <form>
+        Username: <input id="username" type="text" name="username"><br>
+        Password: <input id="password" type="password" name="pwd"><br>
+        <input id="login-button" type="submit" value="Login">
+        <input id="add-button" type="submit" value="Add User">
+      </form>
+    </center>
+  </div>
+
+  <div id="welcome">
+    <center>
+      <form>
+        <input type="submit" id="logout-button" value="Logout">
+      </form>
+    </center>
+  </div>
+</center>
+
+<script type="text/javascript">
+    <!--
+    /* Initialize the page values and errCodeMsgs dictionary. */
+    $('#login').hide()
+    $('#welcome').hide()
+    $('#username').val("")
+    $('#password').val("")
+    $('#message').html("")
+
+    errCodeMsgs = {
+        "1" :"success",
+        "-1":"Invalid username and password combination. Please try again. ",
+        "-2":"This user name already exists. Please try again.",
+        "-3":"The user name should not be empty and at most 128 characters long. Please try again.",
+        "-4":"The password should be at most 128 characters long. Please try again"
+    }
+
+    /* Once the page is ready transition to the login state. */
+    $(document).ready(function() {
+        transition_login();
+    });
+
+    /* Transition between the login state and the welcome screen state. */
+    function transition_login(message) {
+        if(! message) message = "Please input your credentials";
+        $('#welcome').hide()
+        $('#username').val("")
+        $('#password').val("")
+        $('#message').html(message)
+        $('#login').show()
+    }
+
+    function transition_welcome(user, count) {
+        $('#login').hide();
+        $('#welcome').show();
+        $('#message').html("Welcome "+user+"<br>You have logged in "+count+" times.");
+    }
+
+    /* Handle response to our button clicks */
+    function handle_response(data, user) {
+        if( data.errCode > 0 ) {
+            c = data.count;
+            transition_welcome(user, c);
+        } else {
+            transition_login( errCodeMsgs[String(data.errCode)] );
+        }
+    }
+
+    /* Functionality for the different buttons on our page, login, add, and logout */
+    $('#login-button').click(function() {
+        username = $('#username').val()
+        password = $('#password').val()
+        request("/users/login",
+                { user: username, password: password },
+                function(data) { return handle_response(data, username); },
+                function(err) { alert('error occurred on request'); });
+        return false;
+    });
+
+    $('#add-button').click(function() {
+        username = $('#username').val()
+        password = $('#password').val()
+        request("/users/add",
+                { user: username, password: password },
+                function(data) { return handle_response(data, username); },
+                function(err) {alert('error occurred on request'); });
+        return false;
+    });
+
+    $('#logout-button').click(function() {
+        show_login();
+        return false;
+    });
+
+    /* Make a POST request to the given page with the supplied dictionary. */
+    function request(page, dict, success, failure) {
+        $.ajax({
+            type: 'POST',
+            url: page,
+            data: JSON.stringify(dict),
+            contentType: "application/json",
+            dataType: "json",
+            success: success,
+            error: failure
+        });
+    }
+    -->
+</script>
+
+<body>
+</body>
+</html>
