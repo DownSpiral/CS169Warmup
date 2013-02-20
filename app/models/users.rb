@@ -29,9 +29,11 @@ class Users < ActiveRecord::Base
       errCode = ERR_USER_EXISTS
     end
 
-    @user = Users.new(:user => _user, :password => _password)
-    if not @user.save
-      errCode = ERR_DID_NOT_SAVE
+    if errCode == SUCCESS
+      @user = Users.new(:user => _user, :password => _password)
+      if not @user.save
+        errCode = ERR_DID_NOT_SAVE
+      end
     end
 
     return errCode
